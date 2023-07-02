@@ -12,41 +12,42 @@ import (
 )
 
 func FetchRate(c *gin.Context) {
-	crypto := c.Query("cryptocurrency")
-	fiat := c.Query("fiat")
+	crypto := c.Param("cryptocurrency")
+	fiat := c.Param("fiat")
 
-	if crypto != "" && fiat != "" {
-		rate, err := services.GetRate(crypto, fiat)
+	rate, err := services.GetRate(fiat, crypto)
 
-		if err != nil {
-			c.JSON(400, gin.H{"message": "error finding rates"})
-			return
-		}
-
-		c.JSON(200, rate)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "error finding rates"})
+		return
 	}
 
-	if fiat == "" && crypto != "" {
-		rate, err := services.GetRates(crypto)
+	c.JSON(200, rate)
 
-		if err != nil {
-			c.JSON(400, gin.H{"message": "error finding rates"})
-			return
-		}
+}
 
-		c.JSON(200, rate)
+func FetchCryptoRates(c *gin.Context) {
+	crypto := c.Param("cryptocurrency")
+
+	rate, err := services.GetRates(crypto)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "error finding rates"})
+		return
 	}
 
-	if fiat == "" && crypto == "" {
-		rate, err := services.GetAllRate()
+	c.JSON(200, rate)
+}
 
-		if err != nil {
-			c.JSON(400, gin.H{"message": "error finding rates"})
-			return
-		}
+func FetchAllRates(c *gin.Context) {
+	rate, err := services.GetAllRate()
 
-		c.JSON(200, gin.H{"status": true, "rate": rate})
+	if err != nil {
+		c.JSON(400, gin.H{"message": "error finding rates"})
+		return
 	}
+
+	c.JSON(200, gin.H{"status": true, "data": rate})
 }
 
 func FetchAddress(c *gin.Context) {

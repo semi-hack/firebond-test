@@ -10,7 +10,9 @@ import (
 func Initialize() {
 	r := gin.Default()
 
-	r.GET("/rates", controllers.FetchRate)
+	r.GET("/rates", controllers.FetchAllRates)
+	r.GET("/rates/:cryptocurrency", controllers.FetchCryptoRates)
+	r.GET("/rates/:cryptocurrency/:fiat", controllers.FetchRate)
 	r.GET("/rates/history/:cryptocurrency/:fiat", controllers.FetchHistory)
 	r.GET("/balance/:address", controllers.FetchAddress)
 
